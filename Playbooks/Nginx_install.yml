@@ -1,0 +1,26 @@
+---
+- name: Playbook To Deploy Nginx On WebServes Servers and Start The Service
+  hosts: webservers:appservers:dbservers
+  gather_facts: yes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Perform Apt Update
+    shell: apt update
+
+  - name: Install Nginx 
+    shell: apt install -y nginx
+
+  - name: Start Nginx Service
+    shell: service nginx start
+
+  - name: Delete Existing File
+    shell: rm -rf /tmp/passwd
+  
+  - name: CopyFile
+    copy:
+      src: /etc/passwd
+      dest: /tmp/passwd
+
+  - name: Read File
+    shell: cat /tmp/passwd

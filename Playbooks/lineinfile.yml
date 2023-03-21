@@ -1,0 +1,41 @@
+---
+- hosts: pvt
+  gather_facts: yes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Print inventory_hostname
+    ansible.builtin.debug:
+      msg: "{{ inventory_hostname }}"
+
+  - name: Change Hostname on /etc/hostname
+    lineinfile:
+     path: /etc/hostname
+     regexp: '^ip'
+     line: "{{ inventory_hostname }}"
+
+  - name: Print Hostname
+    shell: cat /etc/hostname
+    register: newname
+  - debug:
+      var: newname.stdout   
+
+  - name: Delete Matched Lines
+    lineinfile:
+      path: /etc/hosts
+      regexp: "^#" #This will delete lines which are starting with #(hash)
+      state: absent
+
+    #https://www.middlewareinventory.com/blog/ansible-lineinfile-multiple-lines-replace-multiple-lines/
+  - name: Delete Multiple Matched Lines
+    lineinfile:
+      path: /etc/hosts
+      regexp: '{{item.From}}'
+      line: '{{item.To}}'
+      state: absent
+    with_items:
+    - { From: '^10', To: '^#Hostfile'}
+    - { From: '^Hostfile', To: '^Hostfile'}
+
+  
+  

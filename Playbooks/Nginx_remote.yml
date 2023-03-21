@@ -1,0 +1,81 @@
+---
+  - name: Play for Install Nginx on WebServers
+    hosts: pvt
+    gather_facts: no
+    become: yes
+    become_user: root
+    #serial: 1
+    tags:
+      nginx
+    tasks:
+       - name: Run Apt Update
+         shell: apt update
+         tags:
+           - update
+
+       - name: Clone Git Repo
+         shell: cd /tmp && git clone -b DevOpsB30 https://github.com/mavrick202/dockertest1.git
+         tags:
+           - git
+
+       - name: Install Nginx Server
+         apt: >
+           name=nginx
+           state=present
+         tags:
+             install
+
+       - name: Copy the files to index destination folder.
+         copy: >
+            src=/tmp/dockertest1/index.html
+            dest=/var/www/html/index.nginx-debian.html
+            remote_src=yes
+            owner=root
+            group=root
+            mode=0644
+         tags:
+           - index
+         notify:
+            - restart nginx
+            - create testfolder in tmp
+
+       - name: Copy the style files to  destination folder.
+         copy: >
+            src=/tmp/dockertest1/style.css
+            dest=/var/www/html/style.css
+            remote_src=yes
+            owner=root
+            group=root
+            mode=0644
+         tags:
+           - style
+         notify:
+            - restart nginx
+            - create testfolder in tmp
+
+       - name: Copy the javascript files to  destination folder.
+         copy: >
+            src=/tmp/dockertest1/scorekeeper.js
+            dest=/var/www/html/scorekeeper.js
+            remote_src=yes
+            owner=root
+            group=root
+            mode=0644
+         tags:
+           - index
+         notify:
+            - restart nginx
+            - create testfolder in tmp
+
+       - name: Delete Git Repo from tmp
+         shell: rm -rf /tmp/dockertest1
+         tags:
+           - delete
+    handlers:
+       - name: restart nginx
+         command: service nginx restart
+       - name: create testfolder in tmp
+         shell: |
+           rm -rf /tmp/testfolder
+           mkdir /tmp/testfolder
+           echo 'Welcome To Ansible Handler' >> /tmp/testfolder/testfile

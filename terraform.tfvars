@@ -1,0 +1,7 @@
+vpc_name            = "DevOps_Ansible"
+vpc_cidr            = "10.30.0.0/16"
+public_subnet1_cidr = "10.30.1.0/24"
+public_subnet2_cidr = "10.30.2.0/24"
+public_subnet3_cidr = "10.30.3.0/24"
+peer_vpc_id         = "vpc-0332d5560997dd56f"
+peer_rt_id          = "rtb-05f86250b608751c6"

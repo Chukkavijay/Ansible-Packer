@@ -1,0 +1,31 @@
+---
+- hosts: pvt
+  gather_facts: yes
+  become: yes
+  become_user: root
+  #serial: 1
+  vars:
+   custom_heading: "Welcome To DevOps Testing VARs"
+   todays_date: "{{ ansible_facts['date_time']['date'] }}"
+   host_name: "{{ ansible_facts['hostname'] }}"
+   fqdn_name: "{{ ansible_facts['fqdn'] }}"
+   ip_address: "{{ ansible_facts['eth0']['ipv4']['address'] }}"
+   os_family: "{{ ansible_facts['os_family'] }}"
+   os_distribution: "{{ ansible_facts['distribution'] }}"
+   os_distribution_version: "{{ ansible_facts['distribution_version'] }}"
+  tasks:
+  - name: ip_address Facts
+    ansible.builtin.debug:
+      msg: "{{ ip_address }}"
+
+  - name: host_name Facts
+    ansible.builtin.debug:
+      msg: "{{ host_name }}"
+
+  - name: fqdn_name Facts
+    ansible.builtin.debug:
+      msg: "{{ fqdn_name }}"
+
+  - name: os_family Facts
+    ansible.builtin.debug:
+      msg: "{{ os_family }}"
